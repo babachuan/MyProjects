@@ -71,7 +71,7 @@
   <sql id="Base_Column_List">
     id, loginname, `password`, nickname, age, `location`, `role`
   </sql>
-  <select id="selectByExample" parameterType="com.qhc.oa.entity.AccountExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.qhc.oa.mapper.AccountExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -103,7 +103,7 @@
     delete from account
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.qhc.oa.entity.AccountExample">
+  <delete id="deleteByExample" parameterType="com.qhc.oa.mapper.AccountExample">
     delete from account
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -160,7 +160,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.qhc.oa.entity.AccountExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.qhc.oa.mapper.AccountExample" resultType="java.lang.Long">
     select count(*) from account
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

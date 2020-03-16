@@ -1,4 +1,4 @@
-package com.qhc.oa.entity;
+package com.qhc.oa.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
