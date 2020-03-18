@@ -5,11 +5,9 @@ import com.qhc.oa.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/account")
@@ -17,16 +15,19 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @RequestMapping("/")
+    //登录后首页跳转
+    @RequestMapping("/index")
     public String index(){
         return "index";
     }
 
+    //跳转到登录页面
     @RequestMapping("login")
     public String login(){
         return "account/login";
     }
 
+    //登录时权限校验
     @RequestMapping("/validataAccount")
     @ResponseBody
     public String validataAccount(String loginName,

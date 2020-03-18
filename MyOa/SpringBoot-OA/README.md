@@ -82,3 +82,73 @@ $(function(){
 ```
 
 这里通过jQuery调用时会把参数带过来。
+
+# 4.URI权限校验
+
+在访问网站时如果没有登录，有些资源页面是不准访问的，这时候就需要通过URI进行校验。对应代码如下
+
+```
+package com.qhc.oa.filter;
+
+import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+@WebFilter(urlPatterns = "/*") //这里是对所有的URI做拦截校验
+public class LoginFilter implements Filter {
+    //不需要验证登录的uri
+    private final String[] IGNORE_URI = {"/index", "/account/login", "/css/", "/js", "/images", "/account/validataAccount"};
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
+        //转换成HttpServletRequest 和HttpServletResponse
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
+        //获取URI
+        String uri = request.getRequestURI();
+        System.out.println("当前访问的uri:" + uri);
+        //判断是不是在忽略列表里
+        boolean pass = canPass(uri);
+        if (pass) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        //然后如果不在忽略列表，判断是否已经登录
+        //如果没有登录，强制跳转到登录页面
+        Object account = request.getSession().getAttribute("account");
+        System.out.println("getSession account:" + account);
+        if (null == account) {//没有登录则跳转到登录页面
+            response.sendRedirect("/account/login");
+            return;//这里记住要返回
+        }
+        //如果已经登录，则放行
+        filterChain.doFilter(request, response);
+    }
+    private boolean canPass(String uri) {
+        for (String val : IGNORE_URI) {
+            //判断当前的URI是不是以上面忽略列表开头的，如果是就放过
+            if (uri.startsWith(val)) {
+                return true;
+            }
+        }
+        //否则拦截
+        return false;
+    }
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("Filter init---------");
+        Filter.super.init(filterConfig);
+    }
+}
+```
+
+整体的逻辑是这样：
+
+- 第一步：判断访问的URI是否在忽略列表（这个忽略列表就是让用户去访问登录的，所以不能屏蔽）
+- 第二步：如果访问的URI没在忽略列表，那么判断是否该用户登录过，如果没登录，强制跳转到登录页面
+- 第三步：如果第二步中的账号登录过，那么放行，允许访问
+
