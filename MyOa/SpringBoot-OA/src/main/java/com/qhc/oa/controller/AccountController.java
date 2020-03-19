@@ -4,7 +4,9 @@ import com.qhc.oa.entity.Account;
 import com.qhc.oa.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,5 +45,20 @@ public class AccountController {
             request.getSession().setAttribute("account",account);
             return "success";
         }
+    }
+
+
+    //退出登陆
+    @RequestMapping("logOut")
+    public String logOut(HttpServletRequest request){
+        request.getSession().removeAttribute("account");
+        return "account/login";
+    }
+
+    //用户列表
+    @RequestMapping("list")
+    public String accountList(@RequestParam(defaultValue="1") int pageNum, @RequestParam(defaultValue = "5") int pageSize, Model model){
+        request.getSession().removeAttribute("account");
+        return "account/login";
     }
 }
