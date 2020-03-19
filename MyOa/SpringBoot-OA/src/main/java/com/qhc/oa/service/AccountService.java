@@ -1,5 +1,7 @@
 package com.qhc.oa.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.qhc.oa.entity.Account;
 import com.qhc.oa.mapper.AccountExample;
 import com.qhc.oa.mapper.AccountMapper;
@@ -28,5 +30,13 @@ public class AccountService {
                 .andPasswordEqualTo(password);
         List<Account> accounts = accountMapper.selectByExample(accountExample);
         return accounts.size()==0?null:accounts.get(0);
+    }
+
+    public List<Account> findByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+
+        AccountExample example = new AccountExample();
+        List<Account> accounts = accountMapper.selectByExample(example);
+        return  accounts;
     }
 }

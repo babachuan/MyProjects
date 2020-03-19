@@ -12,7 +12,8 @@ import java.io.IOException;
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
     //不需要验证登录的uri
-    private final String[] IGNORE_URI = {"/account/index", "/account/login", "/css/", "/js", "/images", "/account/validataAccount"};
+    private final String[] IGNORE_URI = {"/account/index", "/account/login", "/css/", "/js", "/images",
+            "/account/validataAccount"};
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
         //转换成HttpServletRequest 和HttpServletResponse

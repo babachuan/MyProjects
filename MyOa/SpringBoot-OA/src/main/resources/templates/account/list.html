@@ -31,16 +31,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
-                <!--                公文流转-->
+                <!--公文流转-->
                 <li class=""><a href="#">公文流转 <span class="sr-only">(current)</span></a></li>
-                <!--                公文流转-->
+                <!--公文流转-->
 
 
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">人员管理 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/account/list">用户列表</a></li>
+                        <li class="active"><a href="/account/list">用户列表</a></li>
                         <li><a href="#">Another action</a></li>
                         <li><a href="#">Something else here</a></li>
                         <li role="separator" class="divider"></li>
@@ -99,13 +99,53 @@
 <!--导航条-->
 
 
-<!--巨幕-->
-<div class="jumbotron">
-    <h1>Hello, world!</h1>
-    <p>欢迎使用无纸化环境</p>
-    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
-</div>
-<!--巨幕-->
+<!--列表-->
+<table class="table table-hover">
+    <tr>
+        <th>序号</th>
+        <th>工号</th>
+        <th>账户</th>
+        <th>昵称</th>
+        <th>年龄</th>
+        <th>国籍</th>
+        <th>角色</th>
+        <th>操作</th>
+    </tr>
+
+    <tr th:each="account:${accountList}">
+        <td th:text="${accountStat.count}"></td>
+        <td th:text="${account.id}">工号</td>
+        <td th:text="${account.loginname}">账户</td>
+        <td th:text="${account.nickname}">昵称</td>
+        <td th:text="${account.age}">年龄</td>
+        <td th:text="${account.location}">国籍</td>
+        <td th:text="${account.role}">角色</td>
+        <td>操作</td>
+    </tr>
+</table>
+<!--列表-->
+
+<!--翻页-->
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li>
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li><a th:href="@{/list?pageNum=1}">1</a></li>
+        <li><a th:href="@{/list?pageNum=2}">2</a></li>
+        <li><a th:href="@{/list?pageNum=3}">3</a></li>
+        <li><a th:href="@{/list?pageNum=4}">4</a></li>
+        <li><a th:href="@{/list?pageNum=5}">5</a></li>
+        <li>
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<!--翻页-->
 
 </body>
 </html>
