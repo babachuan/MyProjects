@@ -2,6 +2,7 @@ package com.qhc.oa.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qhc.oa.RespState;
 import com.qhc.oa.entity.Account;
 import com.qhc.oa.mapper.AccountExample;
 import com.qhc.oa.mapper.AccountMapper;
@@ -41,5 +42,16 @@ public class AccountService {
         //这里传的参数5是为了后面显示5页
         PageInfo<Account> pageInfo = new PageInfo<>(accounts,5);
         return  pageInfo;
+    }
+
+    public RespState deleteById(int id) {
+        AccountExample accountExample = new AccountExample();
+        accountExample.createCriteria().andIdEqualTo(id);
+        int row = accountMapper.deleteByExample(accountExample);
+        if(row == 1){
+            return RespState.build(200);
+        }else{
+            return RespState.build(500,"删除出错");
+        }
     }
 }

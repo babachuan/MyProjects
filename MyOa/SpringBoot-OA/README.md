@@ -152,7 +152,7 @@ public class LoginFilter implements Filter {
 - 第二步：如果访问的URI没在忽略列表，那么判断是否该用户登录过，如果没登录，强制跳转到登录页面
 - 第三步：如果第二步中的账号登录过，那么放行，允许访问
 
-# 翻页
+# 5.翻页
 
 翻页使用的组件时PageHelper
 
@@ -188,6 +188,8 @@ public class LoginFilter implements Filter {
 使用`PageHelper.startPage(pageNum,pageSize)`启动分页查询，这里用到AOP知识。
 
 这里使用了PageInfo,这个在thymleaf中大大简化了翻页操作。
+
+`PageInfo<Account> pageInfo = new PageInfo<>(accounts,5);`这里指定显示5个页码
 
 **list.html代码**
 
@@ -248,3 +250,42 @@ public class LoginFilter implements Filter {
 </nav>
 ```
 
+`th:each="account:${accountList.list}"`是使用PageInfo对象中的`list`方法获取对象数组，然后进行循环。
+
+翻页是使用的bootstrap组件，其中关键是上一页、页码、下一页的说明
+
+**页码表格**
+
+```
+        <li th:class="${accountList.pageNum}==${pageNum}?'active':'#'"
+            th:each="pageNum : ${accountList.navigatepageNums}">
+            <a th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>
+        </li>
+```
+
+首先使用`th:each="pageNum : ${accountList.navigatepageNums}`循环获取指定页码数，
+
+如果点中的是当前页，那么当前页高亮`th:class="${accountList.pageNum}==${pageNum}?'active':'#'"`
+
+下面是打印的PageInfo信息,当前页码是1，对应的`navigatepageNums=[1, 2, 3, 4, 5]}`
+
+```
+PageInfo{pageNum=1, pageSize=5, size=5, startRow=1, endRow=5, total=28, pages=6, list=Page{count=true, pageNum=1, pageSize=5, startRow=0, endRow=5, total=28, pages=6, reasonable=false, pageSizeZero=false}[Account [Hash = -2109168208, id=1, loginname=sunwukong, password=s123456, nickname=孙悟空, age=100, location=中原, role=大师兄, serialVersionUID=1], Account [Hash = 1721357063, id=2, loginname=zhubajie, password=z123456, nickname=猪八戒, age=100, location=中土, role=二师兄, serialVersionUID=1], Account [Hash = -40731312, id=3, loginname=zhubajie31, password=z123456, nickname=猪八戒1, age=100, location=中土1, role=二师兄2, serialVersionUID=1], Account [Hash = 1734276051, id=4, loginname=zhubajie41, password=z123456, nickname=猪八戒1, age=100, location=中土1, role=二师兄3, serialVersionUID=1], Account [Hash = -785683882, id=5, loginname=zhubajie51, password=z123456, nickname=猪八戒1, age=100, location=中土1, role=二师兄4, serialVersionUID=1]], prePage=0, nextPage=2, isFirstPage=true, isLastPage=false, hasPreviousPage=false, hasNextPage=true, navigatePages=5, navigateFirstPage=1, navigateLastPage=5, navigatepageNums=[1, 2, 3, 4, 5]}
+```
+
+然后通过`<a th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>`这样的\<a\>标签进行显示。
+
+**上一页/下一页**
+
+```
+        <li th:class="${accountList.prePage}==0?'disabled':'' ">
+            <a th:href="@{${accountList.prePage}== 0?'javascript:void(0);' :'/account/list?pageNum='+${accountList.prePage}}"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+```
+
+这里有两个逻辑判断`th:class="${accountList.prePage}==0?'disabled':''`如果上一页是0，那么这个上一页标签不允许再点击，
+
+`th:href="@{${accountList.prePage}== 0?'javascript:void(0);' :'/account/list?pageNum='+${accountList.prePage}}"`判断上页是不是0，如果是就用`javascript:void(0);`代码进行限定，不让点击（上面只是显示禁用图标，但依然可以点击），如果不是0，就进行上页跳转`'/account/list?pageNum='+${accountList.prePage}`,下一页的逻辑判断同这个。

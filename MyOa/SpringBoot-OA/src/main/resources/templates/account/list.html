@@ -12,6 +12,29 @@
 <body>
 
 
+<!--模态框-->
+<div class="modal fade" id="deleteByIdModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--模态框-->
+
+
+
+
 <!--导航条-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -112,13 +135,18 @@
         <td th:text="${account.age}">年龄</td>
         <td th:text="${account.location}">国籍</td>
         <td th:text="${account.role}">角色</td>
-        <td>操作</td>
+        <td>
+            <a class="btn" data-toggle="modal" data-target="#deleteByIdModal" th:href="@{'javascript:deleteById('+${account.id}+');'}">删除</a>
+
+            修改密码
+
+        </td>
     </tr>
 </table>
 <!--列表-->
 
 <!--调试代码,获取PageInfo中的所有数据-->
-<!--[[${accountList.navigatepageNums}]]-->
+<!--[[${accountList}]]-->
 <!--调试代码-->
 
 <!--翻页-->
@@ -148,5 +176,32 @@
 </nav>
 <!--翻页-->
 
+
+<!--javascript代码-->
+<script type="text/javascript">
+
+    // 删除记录
+    function deleteById(id) {
+        console.log("id:" + id)
+
+        $(function() {
+            $('#deleteByIdModal').modal('hide')
+        });
+
+            var url = "/account/deleteById";
+            var args = {id: id};
+            $.post(url, args, function (data) {
+                    console.log(data)
+                    if (data.code == 200) {
+                        window.location.reload();
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            );
+    }
+
+
+</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.qhc.oa.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.qhc.oa.RespState;
 import com.qhc.oa.entity.Account;
 import com.qhc.oa.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +65,13 @@ public class AccountController {
         System.out.println("==============="+page);
         model.addAttribute("accountList", page);
         return "account/list";
+    }
+
+    //删除记录
+    @RequestMapping("deleteById")
+    @ResponseBody
+    public RespState accountList(@RequestParam int id){
+        RespState respState = accountService.deleteById(id);
+        return respState;
     }
 }
