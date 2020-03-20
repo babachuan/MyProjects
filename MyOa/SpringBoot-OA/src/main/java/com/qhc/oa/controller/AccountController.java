@@ -60,7 +60,8 @@ public class AccountController {
     //用户列表
     @RequestMapping("list")
     public String accountList(@RequestParam(defaultValue="1") int pageNum, @RequestParam(defaultValue = "5") int pageSize, Model model){
-        List<Account> page = accountService.findByPage(pageNum,pageSize);
+        PageInfo<Account> page = accountService.findByPage(pageNum,pageSize);
+        System.out.println("==============="+page);
         model.addAttribute("accountList", page);
         return "account/list";
     }

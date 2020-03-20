@@ -32,11 +32,14 @@ public class AccountService {
         return accounts.size()==0?null:accounts.get(0);
     }
 
-    public List<Account> findByPage(int pageNum, int pageSize) {
+    public PageInfo<Account> findByPage(int pageNum, int pageSize) {
+        //启动分页
         PageHelper.startPage(pageNum,pageSize);
-
+        //查询出所有数据，并通过PageInfo接收
         AccountExample example = new AccountExample();
         List<Account> accounts = accountMapper.selectByExample(example);
-        return  accounts;
+        //这里传的参数5是为了后面显示5页
+        PageInfo<Account> pageInfo = new PageInfo<>(accounts,5);
+        return  pageInfo;
     }
 }

@@ -62,25 +62,17 @@
             <!--搜索-->
 
 
-
-
-
-
-                <!--用户未登陆状态下，显示登陆注册-->
-                <ul th:if="${session.account}==null" class="nav navbar-nav navbar-right">
+            <!--用户未登陆状态下，显示登陆注册-->
+            <ul th:if="${session.account}==null" class="nav navbar-nav navbar-right">
                 <li><a href="#">注册</a></li>
                 <li><a href="/account/login">登陆</a></li>
-                </ul>
+            </ul>
 
-                <!--用户未登陆状态下，显示登陆注册-->
-
-
+            <!--用户未登陆状态下，显示登陆注册-->
 
 
-
-
-                <!-- 已登录用户    ↓ -->
-                <ul th:if="${session.account} !=null" class="nav navbar-nav navbar-right">
+            <!-- 已登录用户    ↓ -->
+            <ul th:if="${session.account} !=null" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">欢迎你:[[${session.account.nickname}]] <span class="caret"></span></a>
@@ -112,7 +104,7 @@
         <th>操作</th>
     </tr>
 
-    <tr th:each="account:${accountList}">
+    <tr th:each="account:${accountList.list}">
         <td th:text="${accountStat.count}"></td>
         <td th:text="${account.id}">工号</td>
         <td th:text="${account.loginname}">账户</td>
@@ -125,22 +117,32 @@
 </table>
 <!--列表-->
 
+<!--调试代码,获取PageInfo中的所有数据-->
+[[${accountList.navigatepageNums}]]
+<!--调试代码-->
+
 <!--翻页-->
 <nav aria-label="Page navigation">
     <ul class="pagination">
-        <li>
-            <a href="#" aria-label="Previous">
+        <li th:class="${accountList.prePage}==0?'disabled':'' ">
+            <a th:href="@{${accountList.prePage}== 0?'javascript:void(0);' :'/account/list?pageNum='+${accountList.prePage}}"
+               aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
 
-        <li><a th:href="@{/account/list?pageNum=1}">1</a></li>
-        <li><a th:href="@{/account/list?pageNum=2}">2</a></li>
-        <li><a th:href="@{/account/list?pageNum=3}">3</a></li>
-        <li><a th:href="@{/account/list?pageNum=4}">4</a></li>
-        <li><a th:href="@{/account/list?pageNum=5}">5</a></li>
-        <li>
-            <a href="#" aria-label="Next">
+        <!--通过循环迭代出5页的内容-->
+        <li th:each="pageNum : ${accountList.navigatepageNums}">
+<!--            如果是当前页，就active-->
+            [[${accountList.pageNum}]]  [[${pageNum}]]
+            <a th:class="${accountList.pageNum}==${pageNum}?'active':'#'" th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>
+        </li>
+        <!--        <li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
+        <!--        <li><a th:href="@{/account/list?pageNum=3}">3</a></li>-->
+        <!--        <li><a th:href="@{/account/list?pageNum=4}">4</a></li>-->
+        <!--        <li><a th:href="@{/account/list?pageNum=5}">5</a></li>-->
+        <li th:class="${accountList.isLastPage}==true ?'disabled':''">
+            <a th:href="@{${accountList.isLastPage}==true ? 'javascript:void(0);':'/account/list?pageNum='+${accountList.nextPage}}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
