@@ -118,7 +118,7 @@
 <!--列表-->
 
 <!--调试代码,获取PageInfo中的所有数据-->
-[[${accountList.navigatepageNums}]]
+<!--[[${accountList.navigatepageNums}]]-->
 <!--调试代码-->
 
 <!--翻页-->
@@ -131,18 +131,16 @@
             </a>
         </li>
 
-        <!--通过循环迭代出5页的内容-->
-        <li th:each="pageNum : ${accountList.navigatepageNums}">
-<!--            如果是当前页，就active-->
-            [[${accountList.pageNum}]]  [[${pageNum}]]
-            <a th:class="${accountList.pageNum}==${pageNum}?'active':'#'" th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>
+        <!--通过循环迭代出5页的内容--><!--如果是当前页，就active   -->
+        <li th:class="${accountList.pageNum}==${pageNum}?'active':'#'"
+            th:each="pageNum : ${accountList.navigatepageNums}">
+            <!--调试代码：[[${accountList.pageNum}]] [[${pageNum}]]-->
+            <a th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>
         </li>
-        <!--        <li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
-        <!--        <li><a th:href="@{/account/list?pageNum=3}">3</a></li>-->
-        <!--        <li><a th:href="@{/account/list?pageNum=4}">4</a></li>-->
-        <!--        <li><a th:href="@{/account/list?pageNum=5}">5</a></li>-->
+        <!--静态写法<li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
         <li th:class="${accountList.isLastPage}==true ?'disabled':''">
-            <a th:href="@{${accountList.isLastPage}==true ? 'javascript:void(0);':'/account/list?pageNum='+${accountList.nextPage}}" aria-label="Next">
+            <a th:href="@{${accountList.isLastPage}==true ? 'javascript:void(0);':'/account/list?pageNum='+${accountList.nextPage}}"
+               aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

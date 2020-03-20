@@ -152,3 +152,99 @@ public class LoginFilter implements Filter {
 - 第二步：如果访问的URI没在忽略列表，那么判断是否该用户登录过，如果没登录，强制跳转到登录页面
 - 第三步：如果第二步中的账号登录过，那么放行，允许访问
 
+# 翻页
+
+翻页使用的组件时PageHelper
+
+**Controller中的代码**
+
+```
+    @RequestMapping("list")
+    public String accountList(@RequestParam(defaultValue="1") int pageNum, @RequestParam(defaultValue = "5") int pageSize, Model model){
+        PageInfo<Account> page = accountService.findByPage(pageNum,pageSize);
+        System.out.println("==============="+page);
+        model.addAttribute("accountList", page);
+        return "account/list";
+    }
+```
+
+在controller里接收一个PageInfo对象，传进model里`model.addAttribute("accountList", page)`
+
+**Service代码**
+
+```
+    public PageInfo<Account> findByPage(int pageNum, int pageSize) {
+        //启动分页
+        PageHelper.startPage(pageNum,pageSize);
+        //查询出所有数据，并通过PageInfo接收
+        AccountExample example = new AccountExample();
+        List<Account> accounts = accountMapper.selectByExample(example);
+        //这里传的参数5是为了后面显示5页
+        PageInfo<Account> pageInfo = new PageInfo<>(accounts,5);
+        return  pageInfo;
+    }
+```
+
+使用`PageHelper.startPage(pageNum,pageSize)`启动分页查询，这里用到AOP知识。
+
+这里使用了PageInfo,这个在thymleaf中大大简化了翻页操作。
+
+**list.html代码**
+
+```
+<table class="table table-hover">
+    <tr>
+        <th>序号</th>
+        <th>工号</th>
+        <th>账户</th>
+        <th>昵称</th>
+        <th>年龄</th>
+        <th>国籍</th>
+        <th>角色</th>
+        <th>操作</th>
+    </tr>
+
+    <tr th:each="account:${accountList.list}">
+        <td th:text="${accountStat.count}"></td>
+        <td th:text="${account.id}">工号</td>
+        <td th:text="${account.loginname}">账户</td>
+        <td th:text="${account.nickname}">昵称</td>
+        <td th:text="${account.age}">年龄</td>
+        <td th:text="${account.location}">国籍</td>
+        <td th:text="${account.role}">角色</td>
+        <td>操作</td>
+    </tr>
+</table>
+<!--列表-->
+
+<!--调试代码,获取PageInfo中的所有数据-->
+<!--[[${accountList.navigatepageNums}]]-->
+<!--调试代码-->
+
+<!--翻页-->
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li th:class="${accountList.prePage}==0?'disabled':'' ">
+            <a th:href="@{${accountList.prePage}== 0?'javascript:void(0);' :'/account/list?pageNum='+${accountList.prePage}}"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <!--通过循环迭代出5页的内容--><!--如果是当前页，就active   -->
+        <li th:class="${accountList.pageNum}==${pageNum}?'active':'#'"
+            th:each="pageNum : ${accountList.navigatepageNums}">
+            <!--调试代码：[[${accountList.pageNum}]] [[${pageNum}]]-->
+            <a th:href="@{'/account/list?pageNum='+${pageNum}}">[[${pageNum}]]</a>
+        </li>
+        <!--静态写法<li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
+        <li th:class="${accountList.isLastPage}==true ?'disabled':''">
+            <a th:href="@{${accountList.isLastPage}==true ? 'javascript:void(0);':'/account/list?pageNum='+${accountList.nextPage}}"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+```
+
