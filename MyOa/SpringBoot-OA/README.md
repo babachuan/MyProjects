@@ -289,3 +289,74 @@ PageInfo{pageNum=1, pageSize=5, size=5, startRow=1, endRow=5, total=28, pages=6,
 这里有两个逻辑判断`th:class="${accountList.prePage}==0?'disabled':''`如果上一页是0，那么这个上一页标签不允许再点击，
 
 `th:href="@{${accountList.prePage}== 0?'javascript:void(0);' :'/account/list?pageNum='+${accountList.prePage}}"`判断上页是不是0，如果是就用`javascript:void(0);`代码进行限定，不让点击（上面只是显示禁用图标，但依然可以点击），如果不是0，就进行上页跳转`'/account/list?pageNum='+${accountList.prePage}`,下一页的逻辑判断同这个。
+
+# 6.删除记录
+
+操作：在页面上点击删除按钮，删除一条记录
+
+**前端页面**
+
+```
+            <a class="btn" data-toggle="modal" data-target="#deleteByIdModal" th:href="@{'javascript:deleteById('+${account.id}+');'}">删除</a>
+```
+
+**Javascript代码**
+
+```
+    // 删除记录
+    function deleteById(id) {
+        console.log("id:" + id)
+
+        $(function() {
+            $('#deleteByIdModal').modal('hide')
+        });
+
+            var url = "/account/deleteById";
+            var args = {id: id};
+            $.post(url, args, function (data) {
+                    console.log(data)
+                    if (data.code == 200) {
+                        window.location.reload();
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            );
+    }
+```
+
+`var url = "/account/deleteById"`可以看到转到的crontroller接口。通过`jQuery`的`post`异步提交请求`$.post(url, args, function (data)..)`进行提交。
+
+**Controller**
+
+```
+    //删除记录
+    @RequestMapping("deleteById")
+    @ResponseBody
+    public RespState accountList(@RequestParam int id){
+        RespState respState = accountService.deleteById(id);
+        return respState;
+    }
+```
+
+这里使用`RespState`接收操作结果。
+
+**Service代码**
+
+```
+    public RespState deleteById(int id) {
+        AccountExample accountExample = new AccountExample();
+        accountExample.createCriteria().andIdEqualTo(id);
+        int row = accountMapper.deleteByExample(accountExample);
+        if(row == 1){
+            return RespState.build(200);
+        }else{
+            return RespState.build(500,"删除出错");
+        }
+    }
+```
+
+这里使用Mybatis进行操作。
+
+上面的操作比较简单，具体参见代码。
+
