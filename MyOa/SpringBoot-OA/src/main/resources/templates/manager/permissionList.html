@@ -63,7 +63,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">人员管理 <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="active"><a href="/account/list">用户列表</a></li>
+                        <li><a href="/account/list">用户列表</a></li>
                         <li><a href="#">Another action</a></li>
                         <li><a href="#">Something else here</a></li>
                         <li role="separator" class="divider"></li>
@@ -134,23 +134,38 @@
 <table class="table table-hover">
     <tr>
         <th>序号</th>
-        <th>工号</th>
-        <th>账户</th>
-        <th>昵称</th>
-        <th>年龄</th>
-        <th>国籍</th>
-        <th>角色</th>
-        <th>操作</th>
+        <th>ID</th>
+        <th>权限名称</th>
+        <th>权限URI</th>
+        <th>新增</th>
+        <th>只读</th>
+        <th>更新</th>
+        <th>删除</th>
     </tr>
 
-    <tr th:each="account:${accountList.list}">
-        <td th:text="${accountStat.count}"></td>
-        <td th:text="${account.id}">工号</td>
-        <td th:text="${account.loginname}">账户</td>
-        <td th:text="${account.nickname}">昵称</td>
-        <td th:text="${account.age}">年龄</td>
-        <td th:text="${account.location}">国籍</td>
-        <td th:text="${account.role}">角色</td>
+    private Integer id;
+
+    private String pname;
+
+    private String uri;
+
+    private Byte c;
+
+    private Byte r;
+
+    private Byte u;
+
+    private Byte d;
+
+    <tr th:each="permission:${permissionList.list}">
+        <td th:text="${permissionStat.count}"></td>
+        <td th:text="${permission.id}">id</td>
+        <td th:text="${permission.pname}">权限名称</td>
+        <td th:text="${permission.uri}">权限URI</td>
+        <td th:text="${permission.c}">C</td>
+        <td th:text="${permission.r}">R</td>
+        <td th:text="${permission.u}">U</td>
+        <td th:text="${permission.d}">D</td>
         <td>
             <a class="btn" data-toggle="modal" data-target="#deleteByIdModal" th:href="@{'javascript:deleteById('+${account.id}+');'}">删除</a>
 
@@ -195,27 +210,6 @@
 
 <!--javascript代码-->
 <script type="text/javascript">
-
-    // 删除记录
-    function deleteById(id) {
-        console.log("id:" + id)
-
-        $(function() {
-            $('#deleteByIdModal').modal('hide')
-        });
-
-            var url = "/account/deleteById";
-            var args = {id: id};
-            $.post(url, args, function (data) {
-                    console.log(data)
-                    if (data.code == 200) {
-                        window.location.reload();
-                    } else {
-                        alert(data.msg)
-                    }
-                }
-            );
-    }
 
 
 </script>

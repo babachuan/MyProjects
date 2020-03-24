@@ -360,3 +360,151 @@ PageInfo{pageNum=1, pageSize=5, size=5, startRow=1, endRow=5, total=28, pages=6,
 
 上面的操作比较简单，具体参见代码。
 
+```
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 80011
+Source Host           : localhost:3306
+Source Database       : oa
+
+Target Server Type    : MYSQL
+Target Server Version : 80011
+File Encoding         : 65001
+
+Date: 2020-03-24 08:32:24
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for account
+-- ----------------------------
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `loginname` varchar(255) NOT NULL COMMENT '用户名',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  `nickname` varchar(255) DEFAULT NULL COMMENT '昵称',
+  `age` int(10) DEFAULT NULL COMMENT '年龄',
+  `location` varchar(255) DEFAULT NULL COMMENT '国籍',
+  `role` varchar(255) DEFAULT NULL COMMENT '角色',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `loginname` (`loginname`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of account
+-- ----------------------------
+INSERT INTO `account` VALUES ('1', 'sunwukong', 's123456', '孙悟空', '100', '中原', '大师兄');
+INSERT INTO `account` VALUES ('2', 'zhubajie', 'z123456', '猪八戒', '102', '东土大唐', '二师兄');
+INSERT INTO `account` VALUES ('3', 'shaseng', 's123456', '沙僧', '103', '唐朝', '三师弟');
+INSERT INTO `account` VALUES ('4', 'tangseng', 't123456', '唐僧', '50', '唐国', '师傅');
+INSERT INTO `account` VALUES ('5', 'tangseng2', 't123456', '唐僧1', '51', '唐国1', '师傅2');
+INSERT INTO `account` VALUES ('6', 'tangseng3', 't123456', '唐僧1', '51', '唐国1', '师傅3');
+INSERT INTO `account` VALUES ('7', 'tangseng4', 't123456', '唐僧1', '51', '唐国1', '师傅4');
+INSERT INTO `account` VALUES ('8', 'tangseng5', 't123456', '唐僧1', '51', '唐国1', '师傅5');
+INSERT INTO `account` VALUES ('9', 'tangseng6', 't123456', '唐僧1', '51', '唐国1', '师傅6');
+INSERT INTO `account` VALUES ('10', 'tangseng7', 't123456', '唐僧1', '51', '唐国1', '师傅7');
+INSERT INTO `account` VALUES ('11', 'tangseng8', 't123456', '唐僧1', '51', '唐国1', '师傅8');
+INSERT INTO `account` VALUES ('12', 'tangseng9', 't123456', '唐僧1', '51', '唐国1', '师傅9');
+INSERT INTO `account` VALUES ('13', 'tangseng10', 't123456', '唐僧1', '51', '唐国1', '师傅10');
+INSERT INTO `account` VALUES ('14', 'tangseng11', 't123456', '唐僧1', '51', '唐国1', '师傅11');
+INSERT INTO `account` VALUES ('15', 'tangseng12', 't123456', '唐僧1', '51', '唐国1', '师傅12');
+INSERT INTO `account` VALUES ('16', 'tangseng13', 't123456', '唐僧1', '51', '唐国1', '师傅13');
+INSERT INTO `account` VALUES ('17', 'tangseng14', 't123456', '唐僧1', '51', '唐国1', '师傅14');
+INSERT INTO `account` VALUES ('18', 'tangseng15', 't123456', '唐僧1', '51', '唐国1', '师傅15');
+INSERT INTO `account` VALUES ('19', 'tangseng16', 't123456', '唐僧1', '51', '唐国1', '师傅16');
+INSERT INTO `account` VALUES ('20', 'tangseng17', 't123456', '唐僧1', '51', '唐国1', '师傅17');
+INSERT INTO `account` VALUES ('21', 'tangseng18', 't123456', '唐僧1', '51', '唐国1', '师傅18');
+INSERT INTO `account` VALUES ('22', 'tangseng19', 't123456', '唐僧1', '51', '唐国1', '师傅19');
+INSERT INTO `account` VALUES ('23', 'tangseng20', 't123456', '唐僧1', '51', '唐国1', '师傅20');
+INSERT INTO `account` VALUES ('24', 'tangseng21', 't123456', '唐僧1', '51', '唐国1', '师傅21');
+INSERT INTO `account` VALUES ('25', 'tangseng22', 't123456', '唐僧1', '51', '唐国1', '师傅22');
+INSERT INTO `account` VALUES ('26', 'tangseng23', 't123456', '唐僧1', '51', '唐国1', '师傅23');
+INSERT INTO `account` VALUES ('27', 'tangseng24', 't123456', '唐僧1', '51', '唐国1', '师傅24');
+INSERT INTO `account` VALUES ('28', 'tangseng25', 't123456', '唐僧1', '51', '唐国1', '师傅25');
+INSERT INTO `account` VALUES ('29', 'tangseng26', 't123456', '唐僧1', '51', '唐国1', '师傅26');
+INSERT INTO `account` VALUES ('30', 'tangseng27', 't123456', '唐僧1', '51', '唐国1', '师傅27');
+INSERT INTO `account` VALUES ('31', 'tangseng28', 't123456', '唐僧1', '51', '唐国1', '师傅28');
+INSERT INTO `account` VALUES ('32', 'tangseng29', 't123456', '唐僧1', '51', '唐国1', '师傅29');
+INSERT INTO `account` VALUES ('33', 'tangseng30', 't123456', '唐僧1', '51', '唐国1', '师傅30');
+INSERT INTO `account` VALUES ('34', 'tangseng31', 't123456', '唐僧1', '51', '唐国1', '师傅31');
+INSERT INTO `account` VALUES ('35', 'tangseng32', 't123456', '唐僧1', '51', '唐国1', '师傅32');
+INSERT INTO `account` VALUES ('36', 'tangseng33', 't123456', '唐僧1', '51', '唐国1', '师傅33');
+INSERT INTO `account` VALUES ('37', 'tangseng34', 't123456', '唐僧1', '51', '唐国1', '师傅34');
+
+-- ----------------------------
+-- Table structure for account_role
+-- ----------------------------
+DROP TABLE IF EXISTS `account_role`;
+CREATE TABLE `account_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of account_role
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pname` varchar(255) DEFAULT NULL,
+  `uri` varchar(255) DEFAULT NULL,
+  `c` tinyint(2) DEFAULT NULL,
+  `r` tinyint(2) DEFAULT NULL,
+  `u` tinyint(2) DEFAULT NULL,
+  `d` tinyint(2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of permission
+-- ----------------------------
+INSERT INTO `permission` VALUES ('1', '系统管理', '/system/manager', null, null, null, null);
+INSERT INTO `permission` VALUES ('2', '实验管理', '/trial/management', null, null, null, null);
+
+-- ----------------------------
+-- Table structure for role
+-- ----------------------------
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `id` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `roleName` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `roleName_uniq` (`roleName`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of role
+-- ----------------------------
+INSERT INTO `role` VALUES ('00000000002', '前台用户');
+INSERT INTO `role` VALUES ('00000000001', '管理员');
+
+-- ----------------------------
+-- Table structure for role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `role_permission`;
+CREATE TABLE `role_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) DEFAULT NULL,
+  `permission_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of role_permission
+-- ----------------------------
+INSERT INTO `role_permission` VALUES ('1', '1', '1');
+INSERT INTO `role_permission` VALUES ('2', '2', '2');
+SET FOREIGN_KEY_CHECKS=1;
+
+```
+
