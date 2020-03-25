@@ -28,7 +28,7 @@ public class ManagerController {
     public String permissionModify(@RequestParam(value = "id") int id, Model model){
 
         Permission permission = permissionService.findById(id);
-//        调试代码
+        //调试代码
         System.out.println(ToStringBuilder.reflectionToString(permission));
         model.addAttribute("p",permission);
 

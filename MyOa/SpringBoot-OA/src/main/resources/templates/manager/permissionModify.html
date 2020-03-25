@@ -143,10 +143,15 @@
         });
 
         // 针对checkbox的值单独做处理,注意，在组成json的时候不能使用formObject["c"]这种格式，不然会报错：Cannot deserialize instance of `java.lang.Byte` out of VALUE_TRUE token
-        formObject[c]=$("#c").is(':checked');
-        formObject[r]=$("#r").is(':checked');
-        formObject[u]=$("#u").is(':checked');
-        formObject[d]=$("#d").is(':checked');
+        formObject["c"] = $("#c").is(':checked')?"1":"0";
+        formObject["r"] = $("#r").is(':checked')?"1":"0";
+        formObject["u"] = $("#u").is(':checked')?"1":"0";
+        formObject["d"] = $("#d").is(':checked')?"1":"0";
+
+        // formObject["c"] = "1";
+        // formObject["r"] = "1";
+        // formObject["u"] = "1";
+        // formObject["d"] = "1";
 
         // 提交json对象到controller
         console.log("data"+JSON.stringify(data));
@@ -158,11 +163,11 @@
         var url="/api/v1/manager/permission/add";
 
         $.ajax({
-            type:"post",
-            url:url,
-            contentType:"application/json",
-            data:JSON.stringify(formObject),
-            dataType:"json",
+            type : "post",
+            url : url,
+            contentType : "application/json",
+            data : JSON.stringify(formObject),
+            dataType : "json",
 
             success:function(msg){
                 console.log('seccess:'+JSON.stringify(msg))

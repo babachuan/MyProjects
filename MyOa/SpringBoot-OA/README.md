@@ -360,6 +360,8 @@ PageInfo{pageNum=1, pageSize=5, size=5, startRow=1, endRow=5, total=28, pages=6,
 
 上面的操作比较简单，具体参见代码。
 
+# 7.数据库SQL
+
 ```
 /*
 Navicat MySQL Data Transfer
@@ -506,5 +508,43 @@ INSERT INTO `role_permission` VALUES ('1', '1', '1');
 INSERT INTO `role_permission` VALUES ('2', '2', '2');
 SET FOREIGN_KEY_CHECKS=1;
 
+```
+
+# 8.提交Post报错处理
+
+在提交修改表单请求的时候，参数是使用checkbox进行赋值，在html模板中的代码如下：
+
+```
+        formObject["c"] = $("#c").is(':checked');
+        formObject["r"] = $("#r").is(':checked');
+        formObject["u"] = $("#u").is(':checked');
+        formObject["d"] = $("#d").is(':checked');
+```
+
+这样赋值得到的json串如下：
+
+```
+formObject{"name":"实验管理","uri":"/trial/management2","id":"2","c":true,"r":false,"u":false,"d":true}
+```
+
+发现对应的值是`true`的类型，在传入接口后就会报错。
+
+**原因**：在页面上传到后台的参数类型与页面的contentType类型不匹配。一定检查传的参数是否符合后台接收要求！！
+
+**解决方法**
+
+```
+ formObject["c"] = $("#c").is(':checked')?"1":"0";
+ formObject["r"] = $("#r").is(':checked')?"1":"0";
+ formObject["u"] = $("#u").is(':checked')?"1":"0";
+ formObject["d"] = $("#d").is(':checked')?"1":"0";
+```
+
+使用javascript的三目运算符进行转换，将`true`转成"1"，`false`转成"0"，然后再进行提交，测试结果OK。
+
+修改后得到的json串：
+
+```
+formObject{"name":"实验管理","uri":"/trial/management2","id":"2","c":"1","r":"0","u":"0","d":"1"}
 ```
 

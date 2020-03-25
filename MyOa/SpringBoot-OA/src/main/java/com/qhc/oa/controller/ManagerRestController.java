@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,6 +20,7 @@ public class ManagerRestController {
     @RequestMapping("add")
     public RespState addOrUpdate(@RequestBody Permission permission){
         System.out.println("permission=="+ ToStringBuilder.reflectionToString(permission));
+        permissionService.add(permission);
 
         return RespState.build(200);
     }

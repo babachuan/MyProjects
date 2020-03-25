@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.qhc.oa.entity.Permission;
 import com.qhc.oa.mapper.PermissionExample;
 import com.qhc.oa.mapper.PermissionMapper;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,10 @@ public class PermissionService {
     public Permission findById(int id) {
         Permission permission = permissionMapper.selectByPrimaryKey(id);
         return permission;
+    }
+
+    public void add(Permission permission) {
+        System.out.println("permission的值=="+ ToStringBuilder.reflectionToString(permission));
+        permissionMapper.updateByPrimaryKeySelective(permission);
     }
 }

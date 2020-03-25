@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, pname, uri, `c`, r, u, d
+    id, pname, uri, c, r, u, d
   </sql>
   <select id="selectByExample" parameterType="com.qhc.oa.mapper.PermissionExample" resultMap="BaseResultMap">
     select
@@ -111,7 +111,7 @@
   </delete>
   <insert id="insert" parameterType="com.qhc.oa.entity.Permission">
     insert into permission (id, pname, uri, 
-      `c`, r, u, d
+      c, r, u, d
       )
     values (#{id,jdbcType=INTEGER}, #{pname,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, 
       #{c,jdbcType=TINYINT}, #{r,jdbcType=TINYINT}, #{u,jdbcType=TINYINT}, #{d,jdbcType=TINYINT}
@@ -130,7 +130,7 @@
         uri,
       </if>
       <if test="c != null">
-        `c`,
+        c,
       </if>
       <if test="r != null">
         r,
@@ -185,7 +185,7 @@
         uri = #{record.uri,jdbcType=VARCHAR},
       </if>
       <if test="record.c != null">
-        `c` = #{record.c,jdbcType=TINYINT},
+        c = #{record.c,jdbcType=TINYINT},
       </if>
       <if test="record.r != null">
         r = #{record.r,jdbcType=TINYINT},
@@ -206,7 +206,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       pname = #{record.pname,jdbcType=VARCHAR},
       uri = #{record.uri,jdbcType=VARCHAR},
-      `c` = #{record.c,jdbcType=TINYINT},
+      c = #{record.c,jdbcType=TINYINT},
       r = #{record.r,jdbcType=TINYINT},
       u = #{record.u,jdbcType=TINYINT},
       d = #{record.d,jdbcType=TINYINT}
@@ -224,7 +224,7 @@
         uri = #{uri,jdbcType=VARCHAR},
       </if>
       <if test="c != null">
-        `c` = #{c,jdbcType=TINYINT},
+        c = #{c,jdbcType=TINYINT},
       </if>
       <if test="r != null">
         r = #{r,jdbcType=TINYINT},
@@ -242,7 +242,7 @@
     update permission
     set pname = #{pname,jdbcType=VARCHAR},
       uri = #{uri,jdbcType=VARCHAR},
-      `c` = #{c,jdbcType=TINYINT},
+      c = #{c,jdbcType=TINYINT},
       r = #{r,jdbcType=TINYINT},
       u = #{u,jdbcType=TINYINT},
       d = #{d,jdbcType=TINYINT}
