@@ -24,8 +24,15 @@ public class ManagerController {
         model.addAttribute("permissionList",page);
         return "manager/permissionList";
     }
-    @RequestMapping("/test")
-    public String test(){
-        return "index";
+    @RequestMapping("/permissionModify")
+    public String permissionModify(@RequestParam(value = "id") int id, Model model){
+
+        Permission permission = permissionService.findById(id);
+//        调试代码
+        System.out.println(ToStringBuilder.reflectionToString(permission));
+        model.addAttribute("p",permission);
+
+        return "manager/permissionModify";
+
     }
 }

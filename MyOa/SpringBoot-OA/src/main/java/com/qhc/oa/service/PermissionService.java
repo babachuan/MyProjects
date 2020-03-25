@@ -23,4 +23,9 @@ public class PermissionService {
         PageInfo<Permission> pageInfo = new PageInfo<>(permissions,5);
         return pageInfo;
     }
+
+    public Permission findById(int id) {
+        Permission permission = permissionMapper.selectByPrimaryKey(id);
+        return permission;
+    }
 }

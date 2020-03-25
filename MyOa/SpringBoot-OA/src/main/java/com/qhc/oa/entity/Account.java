@@ -1,6 +1,7 @@
 package com.qhc.oa.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author 
@@ -38,6 +39,27 @@ public class Account implements Serializable {
      * 角色
      */
     private String role;
+
+//    这里在bean里定义集合，是可以通过自定义SQL一次性全部查出
+//    如果不用permission集合，那么每次查询权限的时候都需要迭代roles集合，这样也是为了简化开发
+    List<Role> roles;
+    List<Permission> permissions;
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -132,21 +154,21 @@ public class Account implements Serializable {
         return result;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", loginname=").append(loginname);
-        sb.append(", password=").append(password);
-        sb.append(", nickname=").append(nickname);
-        sb.append(", age=").append(age);
-        sb.append(", location=").append(location);
-        sb.append(", role=").append(role);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
+//    @Override
+//    public String toString() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(getClass().getSimpleName());
+//        sb.append(" [");
+//        sb.append("Hash = ").append(hashCode());
+//        sb.append(", id=").append(id);
+//        sb.append(", loginname=").append(loginname);
+//        sb.append(", password=").append(password);
+//        sb.append(", nickname=").append(nickname);
+//        sb.append(", age=").append(age);
+//        sb.append(", location=").append(location);
+//        sb.append(", role=").append(role);
+//        sb.append(", serialVersionUID=").append(serialVersionUID);
+//        sb.append("]");
+//        return sb.toString();
+//    }
 }

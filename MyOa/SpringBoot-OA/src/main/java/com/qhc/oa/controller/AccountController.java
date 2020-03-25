@@ -62,7 +62,7 @@ public class AccountController {
     @RequestMapping("list")
     public String accountList(@RequestParam(defaultValue="1") int pageNum, @RequestParam(defaultValue = "5") int pageSize, Model model){
         PageInfo<Account> page = accountService.findByPage(pageNum,pageSize);
-        System.out.println("==============="+page);
+//        System.out.println("==============="+page);
         model.addAttribute("accountList", page);
         return "account/list";
     }

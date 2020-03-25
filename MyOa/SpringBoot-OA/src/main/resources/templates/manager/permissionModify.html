@@ -111,77 +111,68 @@
 <!--导航条-->
 
 
-<!--列表-->
-<table class="table table-hover">
-    <tr>
-        <th>序号</th>
-        <th>ID</th>
-        <th>权限名称</th>
-        <th>权限URI</th>
-        <th>新增</th>
-        <th>只读</th>
-        <th>更新</th>
-        <th>删除</th>
-        <th>操作</th>
-    </tr>
+<!--表单开始↓-->
+<h1>修改权限</h1>
+<form id="p">
+    权限名称： <input name="name" type="text" th:value="${p}==null? '' : ${p.pname}"><br/>
+    URI名称： <input name="uri" type="text" th:value="${p}==null? '' : ${p.uri}"><br/>
+    操作权限：
+    <input type="checkbox" id="c" th:checked="${p}==null?'' : ${p.c}">c
+    <input type="checkbox" id="r" th:checked="${p}==null?'' : ${p.r}">r
+    <input type="checkbox" id="u" th:checked="${p}==null?'' : ${p.u}">u
+    <input type="checkbox" id="d" th:checked="${p}==null?'' : ${p.d}">d
 
+<input type="text" name="id" th:value="${p}==null?'':${p.id}">
 
-    <tr th:each="permission:${permissionList.list}">
-        <td th:text="${permissionStat.count}"></td>
-        <td th:text="${permission.id}">id</td>
-        <td th:text="${permission.pname}">权限名称</td>
-        <td th:text="${permission.uri}">权限URI</td>
-        <td th:text="${permission.c}">新增</td>
-        <td th:text="${permission.r}">只读</td>
-        <td th:text="${permission.u}">更新</td>
-        <td th:text="${permission.d}">删除</td>
-        <td>
-<!--            这里更改的话需要将对应的id传过去，所以使用javascript-->
-            <a th:class="btn" th:href="@{'javascript:modify('+${permission.id}+');'}">修改</a>
-        </td>
+    <a class="btn btn-danger" href="javascript:smt();">提交修改</a>
 
-    </tr>
-</table>
-<!--列表-->
-
-<!--调试代码,获取PageInfo中的所有数据-->
-<!--[[${accountList}]]-->
-<!--调试代码-->
-
-<!--翻页-->
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        <li th:class="${permissionList.prePage}==0?'disabled':'' ">
-            <a th:href="@{${permissionList.prePage}== 0?'javascript:void(0);' :'/manager/permissionList?pageNum='+${permissionList.prePage}}"
-               aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-
-        <!--通过循环迭代出5页的内容--><!--如果是当前页，就active   -->
-        <li th:class="${permissionList.pageNum}==${pageNum}?'active':'#'"
-            th:each="pageNum : ${permissionList.navigatepageNums}">
-            <a th:href="@{'/manager/permissionList?pageNum='+${pageNum}}">[[${pageNum}]]</a>
-        </li>
-        <!--静态写法<li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
-        <li th:class="${permissionList.isLastPage}==true ?'disabled':''">
-            <a th:href="@{${permissionList.isLastPage}==true ? 'javascript:void(0);':'/manager/permissionList?pageNum='+${permissionList.nextPage}}"
-               aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
-<!--翻页-->
+</form>
+<!--表单结束↑-->
 
 
 <!--javascript代码-->
 <script type="text/javascript">
 
-    修改
-    function modify(id){
-        window.location.href="/manager/permissionModify?id="+id
+    // 提交修改
+    function smt(){
+        var formObject={};
+
+        var data=$("#p").serializeArray();
+        $.each(data,function(i,item){
+            formObject[item.name]=item.value
+        });
+
+        // 针对checkbox的值单独做处理,注意，在组成json的时候不能使用formObject["c"]这种格式，不然会报错：Cannot deserialize instance of `java.lang.Byte` out of VALUE_TRUE token
+        formObject[c]=$("#c").is(':checked');
+        formObject[r]=$("#r").is(':checked');
+        formObject[u]=$("#u").is(':checked');
+        formObject[d]=$("#d").is(':checked');
+
+        // 提交json对象到controller
+        console.log("data"+JSON.stringify(data));
+        // 调试，将提交的json打印到控制台
+        console.log('formObject'+JSON.stringify(formObject));
+
+
+        //用ajax做异步提交
+        var url="/api/v1/manager/permission/add";
+
+        $.ajax({
+            type:"post",
+            url:url,
+            contentType:"application/json",
+            data:JSON.stringify(formObject),
+            dataType:"json",
+
+            success:function(msg){
+                console.log('seccess:'+JSON.stringify(msg))
+            },
+            error:function(msg){
+                console.log("error:"+JSON.stringify(msg))
+            }
+        })
     }
+
 
 </script>
 </body>
