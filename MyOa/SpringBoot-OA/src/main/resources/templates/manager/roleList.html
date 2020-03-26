@@ -61,8 +61,8 @@
                        aria-expanded="false">系统设置<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/account/list">账号列表</a></li>
-                        <li><a href="#">角色管理</a></li>
-                        <li><a href="#">权限管理</a></li>
+                        <li><a href="/manager/roleList">角色管理</a></li>
+                        <li><a href="/manager/permissionList">权限管理</a></li>
                     </ul>
                 </li>
                 <!--系统设置  ↑-->
@@ -110,74 +110,73 @@
 </nav>
 <!--导航条-->
 
+<!--添加权限-->
+<button type="button" onclick="addRole()">添加角色</button>
 
-<!--表单开始↓-->
-<h1>修改权限</h1>
-<form id="p">
-    权限名称： <input name="name" type="text" th:value="${p}==null? '' : ${p.pname}"><br/>
-    URI名称： <input name="uri" type="text" th:value="${p}==null? '' : ${p.uri}"><br/>
-    操作权限：
-    <input type="checkbox" id="c" th:checked="${p}==null?'' : ${p.c}">c
-    <input type="checkbox" id="r" th:checked="${p}==null?'' : ${p.r}">r
-    <input type="checkbox" id="u" th:checked="${p}==null?'' : ${p.u}">u
-    <input type="checkbox" id="d" th:checked="${p}==null?'' : ${p.d}">d
+<!--列表-->
+<table class="table table-hover">
+    <tr>
+        <th>序号</th>
+        <th>ID</th>
+        <th>角色名称</th>
+        <th>操作</th>
+    </tr>
 
-<input type="text" name="id" th:value="${p}==null?'':${p.id}">
 
-    <a class="btn btn-danger" href="javascript:smt();">提交修改</a>
+    <tr th:each="role : ${roleList.list}">
+        <td th:text="${roleStat.count}"></td>
+        <td th:text="${role.id}">id</td>
+        <td th:text="${role.rolename}">角色名称</td>
+        <td>
+<!--            这里更改的话需要将对应的id传过去，所以使用javascript-->
+            <a th:class="btn" th:href="@{'javascript:modify('+${role.id}+');'}">修改</a>
+        </td>
 
-</form>
-<!--表单结束↑-->
+    </tr>
+</table>
+<!--列表-->
+
+<!--调试代码,获取PageInfo中的所有数据-->
+<!--[[${accountList}]]-->
+<!--调试代码-->
+
+<!--翻页-->
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li th:class="${roleList.prePage}==0?'disabled':'' ">
+            <a th:href="@{${roleList.prePage}== 0?'javascript:void(0);' :'/manager/roleList?pageNum='+${roleList.prePage}}"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <!--通过循环迭代出5页的内容--><!--如果是当前页，就active   -->
+        <li th:class="${roleList.pageNum}==${pageNum}?'active':'#'"
+            th:each="pageNum : ${roleList.navigatepageNums}">
+            <a th:href="@{'/manager/roleList?pageNum='+${pageNum}}">[[${pageNum}]]</a>
+        </li>
+        <!--静态写法<li><a th:href="@{/account/list?pageNum=2}">2</a></li>-->
+        <li th:class="${roleList.isLastPage}==true ?'disabled':''">
+            <a th:href="@{${roleList.isLastPage}==true ? 'javascript:void(0);':'/manager/roleList?pageNum='+${roleList.nextPage}}"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<!--翻页-->
 
 
 <!--javascript代码-->
 <script type="text/javascript">
-
-    // 提交修改
-    function smt(){
-        var formObject={};
-
-        var data=$("#p").serializeArray();
-        $.each(data,function(i,item){
-            formObject[item.name]=item.value
-        });
-
-        // 针对checkbox的值单独做处理,注意，在组成json的时候不能使用formObject["c"]这种格式，不然会报错：Cannot deserialize instance of `java.lang.Byte` out of VALUE_TRUE token
-        formObject["c"] = $("#c").is(':checked')?"1":"0";
-        formObject["r"] = $("#r").is(':checked')?"1":"0";
-        formObject["u"] = $("#u").is(':checked')?"1":"0";
-        formObject["d"] = $("#d").is(':checked')?"1":"0";
-
-        // formObject["c"] = "1";
-        // formObject["r"] = "1";
-        // formObject["u"] = "1";
-        // formObject["d"] = "1";
-
-        // 提交json对象到controller
-        console.log("data"+JSON.stringify(data));
-        // 调试，将提交的json打印到控制台
-        console.log('formObject'+JSON.stringify(formObject));
-
-
-        //用ajax做异步提交
-        var url="/api/v1/manager/permission/update";
-
-        $.ajax({
-            type : "post",
-            url : url,
-            contentType : "application/json",
-            data : JSON.stringify(formObject),
-            dataType : "json",
-
-            success:function(msg){
-                console.log('seccess:'+JSON.stringify(msg))
-            },
-            error:function(msg){
-                console.log("error:"+JSON.stringify(msg))
-            }
-        })
+    function addRole(){
+        window.location.href="/manager/roleAdd"
     }
 
+    // 修改
+    function modify(id){
+        window.location.href="/manager/roleModify?id="+id
+    }
 
 </script>
 </body>

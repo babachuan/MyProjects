@@ -62,7 +62,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/account/list">账号列表</a></li>
                         <li><a href="#">角色管理</a></li>
-                        <li><a href="#">权限管理</a></li>
+                        <li><a href="/manager/permissionList">权限管理</a></li>
                     </ul>
                 </li>
                 <!--系统设置  ↑-->
@@ -112,19 +112,18 @@
 
 
 <!--表单开始↓-->
-<h1>修改权限</h1>
+<h1>添加权限</h1>
 <form id="p">
-    权限名称： <input name="name" type="text" th:value="${p}==null? '' : ${p.pname}"><br/>
-    URI名称： <input name="uri" type="text" th:value="${p}==null? '' : ${p.uri}"><br/>
+    权限名称： <input name="pname" type="text"><br/>
+    URI名称： <input name="uri" type="text"><br/>
     操作权限：
-    <input type="checkbox" id="c" th:checked="${p}==null?'' : ${p.c}">c
-    <input type="checkbox" id="r" th:checked="${p}==null?'' : ${p.r}">r
-    <input type="checkbox" id="u" th:checked="${p}==null?'' : ${p.u}">u
-    <input type="checkbox" id="d" th:checked="${p}==null?'' : ${p.d}">d
+    <input type="checkbox" id="c" >c
+    <input type="checkbox" id="r" >r
+    <input type="checkbox" id="u" >u
+    <input type="checkbox" id="d" >d
 
-<input type="text" name="id" th:value="${p}==null?'':${p.id}">
 
-    <a class="btn btn-danger" href="javascript:smt();">提交修改</a>
+    <a class="btn btn-danger" href="javascript:smt();">提交</a>
 
 </form>
 <!--表单结束↑-->
@@ -148,11 +147,6 @@
         formObject["u"] = $("#u").is(':checked')?"1":"0";
         formObject["d"] = $("#d").is(':checked')?"1":"0";
 
-        // formObject["c"] = "1";
-        // formObject["r"] = "1";
-        // formObject["u"] = "1";
-        // formObject["d"] = "1";
-
         // 提交json对象到controller
         console.log("data"+JSON.stringify(data));
         // 调试，将提交的json打印到控制台
@@ -160,7 +154,7 @@
 
 
         //用ajax做异步提交
-        var url="/api/v1/manager/permission/update";
+        var url="/api/v1/manager/permission/add";
 
         $.ajax({
             type : "post",
@@ -176,6 +170,8 @@
                 console.log("error:"+JSON.stringify(msg))
             }
         })
+
+        window.location.href="/manager/permissionList"
     }
 
 

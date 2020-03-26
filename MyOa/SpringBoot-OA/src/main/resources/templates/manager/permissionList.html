@@ -110,6 +110,8 @@
 </nav>
 <!--导航条-->
 
+<!--添加权限-->
+<button type="button" onclick="addPermission()">添加权限</button>
 
 <!--列表-->
 <table class="table table-hover">
@@ -177,8 +179,11 @@
 
 <!--javascript代码-->
 <script type="text/javascript">
+    function addPermission(){
+        window.location.href="/manager/permissionAdd"
+    }
 
-    修改
+    // 修改
     function modify(id){
         window.location.href="/manager/permissionModify?id="+id
     }

@@ -30,8 +30,13 @@ public class PermissionService {
         return permission;
     }
 
-    public void add(Permission permission) {
+    public void update(Permission permission) {
         System.out.println("permission的值=="+ ToStringBuilder.reflectionToString(permission));
         permissionMapper.updateByPrimaryKeySelective(permission);
+    }
+
+    public void add(Permission permission) {
+        System.out.println("permission的值=="+ ToStringBuilder.reflectionToString(permission));
+        permissionMapper.insert(permission);
     }
 }
