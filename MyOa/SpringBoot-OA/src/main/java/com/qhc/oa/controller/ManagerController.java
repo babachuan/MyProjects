@@ -73,4 +73,13 @@ public class ManagerController {
         return "manager/roleModify";
 
     }
+
+
+    //关联角色
+    @RequestMapping("rolePermission")
+    public String rolePermission(@RequestParam int id){
+        Role role = roleService.findById(id);
+
+        return "manager/rolePermission";
+    }
 }

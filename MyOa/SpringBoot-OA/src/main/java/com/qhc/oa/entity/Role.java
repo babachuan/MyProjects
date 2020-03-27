@@ -1,6 +1,7 @@
 package com.qhc.oa.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author 
@@ -10,6 +11,16 @@ public class Role implements Serializable {
     private Integer id;
 
     private String rolename;
+
+    private List<Permission> permissionList;
+
+    public List<Permission> getPermissionList() {
+        return permissionList;
+    }
+
+    public void setPermissionList(List<Permission> permissionList) {
+        this.permissionList = permissionList;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -28,6 +39,7 @@ public class Role implements Serializable {
     public void setRolename(String rolename) {
         this.rolename = rolename;
     }
+
 
     @Override
     public boolean equals(Object that) {
