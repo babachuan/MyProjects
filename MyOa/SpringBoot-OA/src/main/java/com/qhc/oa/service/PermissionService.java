@@ -17,6 +17,12 @@ public class PermissionService {
     @Autowired
     PermissionMapper permissionMapper;
 
+    public List<Permission> findAll() {
+        PermissionExample permissionExample = new PermissionExample();
+        List<Permission> permissionList = permissionMapper.selectByExample(permissionExample);
+        return permissionList;
+    }
+
     public PageInfo<Permission> findByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         PermissionExample example =  new PermissionExample();

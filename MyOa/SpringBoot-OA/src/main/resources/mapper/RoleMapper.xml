@@ -5,6 +5,18 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="roleName" jdbcType="VARCHAR" property="rolename" />
   </resultMap>
+  
+  
+  <insert id="addPermissions">
+    delete from role_permission where role_id=#{id};
+    insert into role_permission (role_id,permission_id) values
+        <foreach collection="permissions" item="p" separator=",">
+          (#{id},#{p})
+        </foreach>
+  </insert>
+  
+  
+  
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">

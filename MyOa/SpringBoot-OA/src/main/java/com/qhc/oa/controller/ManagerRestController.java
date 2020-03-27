@@ -7,10 +7,7 @@ import com.qhc.oa.service.PermissionService;
 import com.qhc.oa.service.RoleService;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/manager")
@@ -51,6 +48,16 @@ public class ManagerRestController {
     public RespState roleUpdate(@RequestBody Role role){
         System.out.println("role=="+ ToStringBuilder.reflectionToString(role));
         roleService.updateRole(role);
+        return RespState.build(200);
+    }
+
+    //关联权限
+    @RequestMapping("role/addPermission")
+    public RespState addPermission(@RequestParam int[] permissions,
+                                   @RequestParam int id){
+        roleService.addPermission(id,permissions);
+        System.out.println("id的值是："+id);
+        System.out.println("permissions:"+ToStringBuilder.reflectionToString(permissions));
         return RespState.build(200);
     }
 }

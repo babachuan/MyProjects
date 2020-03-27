@@ -36,4 +36,8 @@ public class RoleService {
     public void updateRole(Role role) {
         roleMapper.updateByPrimaryKeySelective(role);
     }
+
+    public void addPermission(int id, int[] permissions) {
+        roleMapper.addPermissions(id,permissions);
+    }
 }

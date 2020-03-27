@@ -113,12 +113,16 @@
 
 <!--表单开始↓-->
 <h1>修改角色</h1>
-<form id="p">
-    角色名称： <input name="rolename" type="text" th:value="${role.rolename}"><br/>
-    角色id:<input name="id" hidden="hidden" th:value="${role.id}">
+<form id="add">
+    角色名称： <input name="rolename" disabled="disabled" type="text" th:value="${role}==null?'':${role.rolename}"><br/>
+    <input name="id" hidden="hidden" th:value="${role.id}">
 
-
-    <a class="btn btn-danger" href="javascript:smt();">提交</a>
+权限：
+<span th:each="item : ${permissionList}">
+    <input type="checkbox" th:id="${item.id}" name="permissions" th:value="${item.id}">
+    <label>[[${item.pname}]]</label>
+</span>
+    <a class="btn btn-danger" href="javascript:add();">提交</a>
 
 </form>
 <!--表单结束↑-->
@@ -128,13 +132,14 @@
 <script type="text/javascript">
 
     // 提交修改
-    function smt(){
+    function add(){
         var formObject={};
 
-        var data=$("#p").serializeArray();
+        var data=$("#add").serializeArray();
         $.each(data,function(i,item){
             formObject[item.name]=item.value
         });
+        // console.log("data的类型是："+typeof data);
 
 
         // 提交json对象到controller
@@ -142,27 +147,33 @@
         // 调试，将提交的json打印到控制台
         console.log('formObject'+JSON.stringify(formObject));
 
-        // return;
 
-        //用ajax做异步提交
-        var url="/api/v1/manager/role/update";
+        //用jQuery做异步提交
+        $.post("/api/v1/manager/role/addPermission",data,function (data) {
+            //这里data的返回值是一个json对象：{"code":200,"msg":"ok","data":"success"}
+            console.log("执行的结果："+JSON.stringify(data))
+            // if(data != 1){
+            //     alert(data.message)
+            // }
 
-        $.ajax({
-            type : "post",
-            url : url,
-            contentType : "application/json",
-            data : JSON.stringify(formObject),
-            dataType : "json",
-
-            success:function(msg){
-                console.log('seccess:'+JSON.stringify(msg))
-            },
-            error:function(msg){
-                console.log("error:"+JSON.stringify(msg))
-            }
         })
 
-        window.location.href="/manager/roleList"
+        // $.ajax({
+        //     type : "post",
+        //     url : url,
+        //     contentType : "application/json",
+        //     data : JSON.stringify(formObject),
+        //     dataType : "json",
+        //
+        //     success:function(msg){
+        //         console.log('seccess:'+JSON.stringify(msg))
+        //     },
+        //     error:function(msg){
+        //         console.log("error:"+JSON.stringify(msg))
+        //     }
+        // })
+        //
+        // window.location.href="/manager/roleList"
     }
 
 

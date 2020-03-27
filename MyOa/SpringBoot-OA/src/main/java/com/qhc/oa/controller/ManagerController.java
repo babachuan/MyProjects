@@ -77,9 +77,13 @@ public class ManagerController {
 
     //关联角色
     @RequestMapping("rolePermission")
-    public String rolePermission(@RequestParam int id){
+    public String rolePermission(@RequestParam int id,Model model){
         Role role = roleService.findById(id);
 
+        List<Permission> permissionList = permissionService.findAll();
+
+        model.addAttribute("role",role);
+        model.addAttribute("permissionList",permissionList);
         return "manager/rolePermission";
     }
 }
