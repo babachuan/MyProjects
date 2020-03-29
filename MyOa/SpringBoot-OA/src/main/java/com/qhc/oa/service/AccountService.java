@@ -4,12 +4,15 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.qhc.oa.RespState;
 import com.qhc.oa.entity.Account;
+import com.qhc.oa.entity.Permission;
+import com.qhc.oa.entity.Role;
 import com.qhc.oa.mapper.AccountExample;
 import com.qhc.oa.mapper.AccountMapper;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,6 +35,11 @@ public class AccountService {
                 .andPasswordEqualTo(password);
         List<Account> accounts = accountMapper.selectByExample(accountExample);
         return accounts.size() == 0 ? null : accounts.get(0);
+    }
+
+    public List<Account> findAccountPermissions(){
+        List<Account> alist = accountMapper.selectByPermission();
+        return alist;
     }
 
     public PageInfo<Account> findByPage(int pageNum, int pageSize) {
@@ -65,5 +73,30 @@ public class AccountService {
         } else {
             return RespState.build(500, "删除出错");
         }
+    }
+
+
+    public Account findByLoginNameAndPasswordAll(String loginName, String password) {
+//        AccountExample accountExample = new AccountExample();
+//        accountExample.createCriteria().andPasswordEqualTo(password).andLoginnameEqualTo(loginName);
+//        List<Account> account = accountMapper.selectByExample(accountExample);
+//        return account.get(0);
+
+        List<Account> accountList = accountMapper.selectByByLoginNameAndPasswordAll(loginName,password);
+//        Account accountList = accountMapper.selectByByLoginNameAndPasswordAll(loginName,password);
+//        System.out.println("登录后获取到的账户："+ToStringBuilder.reflectionToString(accountList));
+        List<Role> rList = new ArrayList<>();
+        List<Permission> pList = new ArrayList<>();
+
+        for(Account item : accountList){
+            rList.add(item.getRoles().get(0));
+            pList.add(item.getPermissions().get(0));
+            System.out.println("登录后获取到的账户："+ToStringBuilder.reflectionToString(item));
+        }
+        Account finalAccount = accountList.get(0);
+        finalAccount.setRoles(rList);
+        finalAccount.setPermissions(pList);
+        return finalAccount;
+//        return accountList;
     }
 }

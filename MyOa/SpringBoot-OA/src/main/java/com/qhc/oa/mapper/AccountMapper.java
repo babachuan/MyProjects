@@ -12,4 +12,9 @@ import java.util.List;
 public interface AccountMapper extends MyBatisBaseDao<Account, Integer, AccountExample> {
 
     List<Account> selectByPermission();
+
+
+
+    List<Account> selectByByLoginNameAndPasswordAll(String loginName, String password);
+//    Account selectByByLoginNameAndPasswordAll(String loginName, String password);
 }

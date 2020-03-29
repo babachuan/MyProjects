@@ -14,7 +14,41 @@
           (#{id},#{p})
         </foreach>
   </insert>
-  
+
+  <resultMap id="ByRolePermissionResultMap" type="com.qhc.oa.entity.Role">
+    <id column="rid" jdbcType="INTEGER" property="id" />
+    <result column="roleName" jdbcType="VARCHAR" property="rolename" />
+    <collection property="permissionList" ofType="com.qhc.oa.entity.Permission">
+      <id column="pid" jdbcType="INTEGER" property="id" />
+      <result column="pname" jdbcType="VARCHAR" property="pname" />
+      <result column="uri" jdbcType="VARCHAR" property="uri" />
+      <result column="c" jdbcType="TINYINT" property="c" />
+      <result column="r" jdbcType="TINYINT" property="r" />
+      <result column="u" jdbcType="TINYINT" property="u" />
+      <result column="d" jdbcType="TINYINT" property="d" />
+    </collection>
+  </resultMap>
+
+<!--  根据角色ID查询对应的权限列表-->
+  <select id="selectByRolePermission" resultMap="ByRolePermissionResultMap">
+SELECT
+	r.id AS rid,
+	r.roleName,
+	p.id AS pid,
+	p.pname,
+	p.c,
+	p.r,
+	p.u,
+	p.d,
+	p.uri
+FROM
+	role r
+LEFT JOIN role_permission rp ON (r.id = rp.role_id)
+LEFT JOIN permission p ON (p.id = rp.permission_id)
+WHERE
+	r.id = #{id}
+
+  </select>
   
   
   <sql id="Example_Where_Clause">

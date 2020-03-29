@@ -130,7 +130,7 @@
         <td>
 <!--            这里更改的话需要将对应的id传过去，所以使用javascript-->
             <a class="btn btn-danger" th:href="@{'javascript:modify('+${role.id}+');'}">修改</a>
-            <a class="btn btn-danger" th:href="@{'javascript:rolePermission('+${role.id}+');'}">关联角色</a>
+            <a class="btn btn-danger" th:href="@{'javascript:rolePermission('+${role.id}+');'}">关联权限</a>
         </td>
 
     </tr>
@@ -179,7 +179,7 @@
         window.location.href="/manager/roleModify?id="+id
     }
 
-    //关联角色
+    //关联权限
     function rolePermission(id){
         window.location.href="/manager/rolePermission?id="+id
     }

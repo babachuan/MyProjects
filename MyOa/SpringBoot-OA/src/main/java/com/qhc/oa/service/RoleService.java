@@ -2,9 +2,11 @@ package com.qhc.oa.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qhc.oa.entity.Permission;
 import com.qhc.oa.entity.Role;
 import com.qhc.oa.mapper.RoleExample;
 import com.qhc.oa.mapper.RoleMapper;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class RoleService {
         PageHelper.startPage(pageNum,pageSize);
         RoleExample roleExample = new RoleExample();
         List<Role> roles = roleMapper.selectByExample(roleExample);
+        System.out.println(ToStringBuilder.reflectionToString("权限列表："+roles));
         return new PageInfo<>(roles);
 
     }
@@ -39,5 +42,10 @@ public class RoleService {
 
     public void addPermission(int id, int[] permissions) {
         roleMapper.addPermissions(id,permissions);
+    }
+
+    public List<Permission> getRolePermission(int id) {
+        List<Permission> rpList = roleMapper.selectByRolePermission(id);
+        return rpList;
     }
 }

@@ -1,9 +1,11 @@
 package com.qhc.oa.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.qhc.oa.entity.Account;
 import com.qhc.oa.entity.Permission;
 import com.qhc.oa.entity.Role;
 import com.qhc.oa.mapper.RoleMapper;
+import com.qhc.oa.service.AccountService;
 import com.qhc.oa.service.PermissionService;
 import com.qhc.oa.service.RoleService;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -24,6 +27,10 @@ public class ManagerController {
 
     @Autowired
     RoleService roleService;
+
+
+    @Autowired
+    AccountService accountService;
 
     @RequestMapping("permissionList")
     public String permissionList(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "5") int pageSize, Model model) {
@@ -77,11 +84,16 @@ public class ManagerController {
 
     //关联角色
     @RequestMapping("rolePermission")
-    public String rolePermission(@RequestParam int id,Model model){
+    public String rolePermission(@RequestParam int id, Model model){
         Role role = roleService.findById(id);
+
+
+        //角色的权限id列表
+        List<Permission> rpList = roleService.getRolePermission(id);
 
         List<Permission> permissionList = permissionService.findAll();
 
+        model.addAttribute("aList",rpList);
         model.addAttribute("role",role);
         model.addAttribute("permissionList",permissionList);
         return "manager/rolePermission";

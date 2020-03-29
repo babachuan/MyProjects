@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.qhc.oa.RespState;
 import com.qhc.oa.entity.Account;
 import com.qhc.oa.service.AccountService;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,14 @@ public class AccountController {
         return "index";
     }
 
+    //无权限后跳转到错误页面
+    @RequestMapping("/errorPage")
+    public String errorPage(){
+        return "errorPage";
+    }
+
+
+
     //跳转到登录页面
     @RequestMapping("login")
     public String login(){
@@ -40,7 +49,10 @@ public class AccountController {
                                   HttpServletRequest request){
         System.out.println("loginName:"+loginName);
         System.out.println("password:"+password);
-        Account account = accountService.findByLoginNameAndPassword(loginName,password);
+
+        //这里有个bug，只返回权限列表里的第一个permission的uri
+        Account account = accountService.findByLoginNameAndPasswordAll(loginName,password);
+        System.out.println("获取到的值是："+ ToStringBuilder.reflectionToString(account));
         if(account == null){
             return "登录失败";
         }else{
