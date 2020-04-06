@@ -548,3 +548,216 @@ formObject{"name":"实验管理","uri":"/trial/management2","id":"2","c":true,"r
 formObject{"name":"实验管理","uri":"/trial/management2","id":"2","c":"1","r":"0","u":"0","d":"1"}
 ```
 
+# 9.checkbox标签设置属性
+
+在给角色关联权限的时候，需要判定当前权限是不是已经关联过。
+
+**解决思路**：
+
+获取到全部的权限信息；
+
+获取当前角色已经关联的权限信息；
+
+分别进行判断，如果当前权限已经被关联过，则直接标记显示。
+
+**HTML中权限名称部分的代码**
+
+```
+权限名称：
+<span th:each="item : ${permissionList}">
+    <input type="checkbox" th:id="${item.id}" name="permissions" th:value="${item.id}" onclick="check()">
+    <label>[[${item.pname}]]</label>
+</span>
+```
+
+在关联权限的controller跳转页面代码如下：
+
+```
+    @RequestMapping("rolePermission")
+    public String rolePermission(@RequestParam int id, Model model){
+        Role role = roleService.findById(id);
+
+        //角色的权限id列表
+        List<Permission> rpList = roleService.getRolePermission(id);
+        List<Permission> permissionList = permissionService.findAll();
+        model.addAttribute("aList",rpList);
+        model.addAttribute("role",role);
+        model.addAttribute("permissionList",permissionList);
+        return "manager/rolePermission";
+    }
+```
+
+这里分别获取`rpList`已经关联的权限列表和全部的权限列表`permissionList`,然后传到前端页面。
+
+**前端比较的代码**
+
+```
+    //这里的aList是获取到的角色的权限列表
+    for (accPermision in [[${aList}]]){
+
+        //获取角色中权限列表的具体的列表值,可以看成permission对象
+        console.log([[${aList}]][accPermision])
+        var pList = [[${aList}]][accPermision]["permissionList"]
+        for(permission in pList){
+            console.log(pList[permission])
+            // 根据获取的权限的id，判断当前角色是不是已经关联，如果关联那么通过jQuery标记选择。
+            for (item in [[${permissionList}]]) {
+                var pid = [[${permissionList}]][item].id
+                if(pList[permission]["id"] == pid){
+                    $("#"+pid).prop("checked", true);
+                    // console.log(pid)
+
+                }
+            }
+        }
+    }
+```
+
+这里重点是使用jQuery设定checkbox的属性`$(#id).prop('checked', true);`来通过判断结果设定。
+
+# 10.权限校验
+
+在设定用户角色和对应权限后，需要校验当前账户访问是否有权限，整体思路如下。
+
+用户在访问资源的时候，通过filter可以拦截到用户访问的所有的资源列表，然后针对当前访问的uri，取出用户所拥有的所有uri的list，分别进行校验。
+
+相关部分代码如下：
+
+```
+//如果已经登录，比较权限
+        else if (!hasAuth(account.getPermissions(),uri)){
+            request.setAttribute("msg", "您无权访问当前页面:" + uri);
+            request.getRequestDispatcher("/account/errorPage").forward(request, response);
+            return;
+        }
+        //如果已经登录，则放行
+        filterChain.doFilter(request, response);
+```
+
+如果账号已经登录，则进入校验，判断访问的当前的uri是不是在权限list里。
+
+```
+//判断是否有权限
+    private boolean hasAuth(List<Permission> permissionList,String uri){
+        System.out.println("permissionList的大小："+permissionList.size());
+        for(Permission permission : permissionList){
+            System.out.println("这里的权限值是："+permission.getUri());
+            if(uri.startsWith(permission.getUri())){
+                return true;
+            }
+        }
+        return false;
+    }
+```
+
+*备注*：为了后面测试方便，暂时屏蔽掉权限校验部分`com.qhc.oa.filter`相关代码
+
+# 11.使用FastDFS上传文件
+
+这里使用第三方的客户端
+
+```
+        <!-- FastDFS第三方客户端-->
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>1.27.2</version>
+        </dependency>
+```
+
+提交表单内容；
+
+```
+   <!--表单开始↓-->
+    <form action="/account/fileUploadController" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>角色：</td>
+                <td>
+                    <th:block th:each="item : ${session.account.roles}">
+                        <a>[[${item.rolename}]]</a>
+                    </th:block>
+                </td>
+            </tr>
+
+            <tr>
+                <td>登录名：</td>
+                <td>[[${session.account.loginname}]]</td>
+            </tr>
+
+            <tr>
+                <td>头像：</td>
+                <td>
+                    上传文件：<input type="file" name="filename"><br/>
+                    <input type="submit"/>
+
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+    <!--表单结束↑-->
+```
+
+**操作代码**
+
+```
+    //上传头像
+    @RequestMapping("fileUploadController")
+    public String fileUpload(MultipartFile filename,HttpServletRequest request){
+        Set<MetaData> metaData = new HashSet<MetaData>();
+        metaData.add(new MetaData("Author","quhaichuan"));
+        metaData.add(new MetaData("CreateDate","2020-04-06"));
+        try {
+//            StorePath uploadFile = fastFileStorageClient.uploadFile(filename.getInputStream(),filename.getSize(),
+//                    FilenameUtils.getExtension(filename.getOriginalFilename()),metaData);//            StorePath uploadFile = fastFileStorageClient.uploadFile(filename.getInputStream(),filename.getSize(),
+            StorePath uploadFile = fastFileStorageClient.uploadImageAndCrtThumbImage(filename.getInputStream(),filename.getSize(),
+                    FilenameUtils.getExtension(filename.getOriginalFilename()),metaData);
+            System.out.println(uploadFile.getFullPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "account/profile";
+    }
+```
+
+`fastFileStorageClient.uploadFile`上传普通文件
+
+`fastFileStorageClient.uploadImageAndCrtThumbImage`上传图片并裁减缩略图，但是要在配置文件中配置参数
+
+```
+  thumb-image:
+    width: 150
+    height: 150
+```
+
+图片上传后的结果
+
+```
+wKgBa16LOAqAPkUNAAXm4g90EwM593_150x150.png  #缩略图
+wKgBa16LOAqAPkUNAAXm4g90EwM593.png	#原图
+wKgBa16LOAqAPkUNAAXm4g90EwM593.png-m  #元数据
+
+```
+
+
+
+## 下载文件
+
+```
+@RequestMapping("/down")
+	@ResponseBody
+	public ResponseEntity<byte[]> down(HttpServletResponse resp) {
+		
+		DownloadByteArray cb = new DownloadByteArray();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", "aaa.xx");
+		byte[] bs = fc.downloadFile("group1", "M00/00/00/wKiWDV0vAb-AcOaYABf1Yhcsfws9181.xx", cb);
+		
+	return new ResponseEntity<>(bs,headers,HttpStatus.OK);
+	}
+```
+

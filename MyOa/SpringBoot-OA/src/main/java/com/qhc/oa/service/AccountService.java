@@ -89,14 +89,17 @@ public class AccountService {
         List<Permission> pList = new ArrayList<>();
 
         for(Account item : accountList){
-            rList.add(item.getRoles().get(0));
-            pList.add(item.getPermissions().get(0));
+            rList.add((item.getRoles().size() > 0?item.getRoles().get(0):null));
+            pList.add((item.getPermissions().size() > 0 ? item.getPermissions().get(0):null));
             System.out.println("登录后获取到的账户："+ToStringBuilder.reflectionToString(item));
         }
+        if(accountList.size() > 0){
         Account finalAccount = accountList.get(0);
         finalAccount.setRoles(rList);
         finalAccount.setPermissions(pList);
-        return finalAccount;
-//        return accountList;
+        return finalAccount;}else {
+            return null;
+
+        }
     }
 }

@@ -2,9 +2,6 @@ package com.qhc.oa.filter;
 
 import com.qhc.oa.entity.Account;
 import com.qhc.oa.entity.Permission;
-import com.qhc.oa.mapper.AccountMapper;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -53,11 +50,12 @@ public class LoginFilter implements Filter {
         }
 
         //如果已经登录，比较权限
-        else if (!hasAuth(account.getPermissions(),uri)){
-            request.setAttribute("msg", "您无权访问当前页面:" + uri);
-            request.getRequestDispatcher("/account/errorPage").forward(request, response);
-            return;
-        }
+//        暂时屏蔽
+//        else if (!hasAuth(account.getPermissions(),uri)){
+//            request.setAttribute("msg", "您无权访问当前页面:" + uri);
+//            request.getRequestDispatcher("/account/errorPage").forward(request, response);
+//            return;
+//        }
         //如果已经登录，则放行
         filterChain.doFilter(request, response);
     }
