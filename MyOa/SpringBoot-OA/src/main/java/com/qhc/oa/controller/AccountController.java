@@ -3,6 +3,7 @@ package com.qhc.oa.controller;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.domain.fdfs.MetaData;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.domain.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.qhc.oa.RespState;
 import com.qhc.oa.entity.Account;
@@ -10,6 +11,10 @@ import com.qhc.oa.service.AccountService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +121,7 @@ public class AccountController {
         try {
 //            StorePath uploadFile = fastFileStorageClient.uploadFile(filename.getInputStream(),filename.getSize(),
 //                    FilenameUtils.getExtension(filename.getOriginalFilename()),metaData);//            StorePath uploadFile = fastFileStorageClient.uploadFile(filename.getInputStream(),filename.getSize(),
+            //带缩略图上传方式
             StorePath uploadFile = fastFileStorageClient.uploadImageAndCrtThumbImage(filename.getInputStream(),filename.getSize(),
                     FilenameUtils.getExtension(filename.getOriginalFilename()),metaData);
             System.out.println(uploadFile.getFullPath());
@@ -123,5 +130,16 @@ public class AccountController {
         }
 
         return "account/profile";
+    }
+
+    //测试在FastDFS上下载文件
+    @RequestMapping("down")
+    public ResponseEntity<byte[]> down(HttpServletResponse resp){
+        DownloadByteArray downloadByteArray = new DownloadByteArray();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentDispositionFormData("attachment","aaa.png");
+        byte[] bytes = fastFileStorageClient.downloadFile("group1","M00/00/00/wKgBa16L-IeAVEV9AAGOnXelCpo695.png",downloadByteArray);
+        return new ResponseEntity<>(bytes,httpHeaders, HttpStatus.OK);
     }
 }

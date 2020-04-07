@@ -727,11 +727,23 @@ formObject{"name":"实验管理","uri":"/trial/management2","id":"2","c":"1","r"
 
 `fastFileStorageClient.uploadImageAndCrtThumbImage`上传图片并裁减缩略图，但是要在配置文件中配置参数
 
+
+
 ```
   thumb-image:
     width: 150
     height: 150
 ```
+
+`org.apache.commons.io.FilenameUtils.getExtension`使用这个获取文件名后缀
+
+**返回结果带group**
+
+uploadFile.getFullPath() ： group1/M00/00/00/wKiWDV0u7ZKALKtNAAADP9sEx2w432.sql
+
+**不带group**
+
+uploadFile.getPath() ： M00/00/00/wKiWDV0u7ZKALKtNAAADP9sEx2w432.sql
 
 图片上传后的结果
 
@@ -754,10 +766,11 @@ wKgBa16LOAqAPkUNAAXm4g90EwM593.png-m  #元数据
 		DownloadByteArray cb = new DownloadByteArray();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		headers.setContentDispositionFormData("attachment", "aaa.xx");
-		byte[] bs = fc.downloadFile("group1", "M00/00/00/wKiWDV0vAb-AcOaYABf1Yhcsfws9181.xx", cb);
+		headers.setContentDispositionFormData("attachment", "aaa.png");
+		byte[] bs = fc.downloadFile("group1", "M00/00/00/wKgBa16L-IeAVEV9AAGOnXelCpo695.png", cb);
 		
 	return new ResponseEntity<>(bs,headers,HttpStatus.OK);
 	}
 ```
 
+在浏览器中输入`http://localhost:8080/account/down`即可下载对应的图片，结果图片是命名好的。
