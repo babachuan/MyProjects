@@ -1,0 +1,12 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: DubboConsumer
+
+dubbo:
+  registry:
+    address: zookeeper://172.16.28.154:2181
+  scan:
+    base-packages: com.qhc.dubbo.demo

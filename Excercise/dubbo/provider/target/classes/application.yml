@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: DubboProvider
+
+dubbo:
+  protocol:
+    name: dubbo
+    port: 666
+    host: 172.16.28.150
+  registry:
+    address: zookeeper://172.16.28.154:2181
+  scan:
+    base-packages: com.qhc.dubbo.demo
