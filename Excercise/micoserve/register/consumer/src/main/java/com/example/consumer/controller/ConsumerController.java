@@ -1,5 +1,6 @@
 package com.example.consumer.controller;
 
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -11,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @RestController
@@ -22,8 +24,15 @@ public class ConsumerController {
     @Autowired
     LoadBalancerClient loadBalancerClient;
 
+    //测试自定义负载策略时使用
+    AtomicInteger count =  new AtomicInteger();
 
-    private RestTemplate restTemplate = new RestTemplate();
+
+    //这里也可以使用注解的形式，因为RestTemplate是无状态的，在配置类里制作一个单例即可
+        @Autowired
+        RestTemplate restTemplate;
+
+//    private RestTemplate restTemplate = new RestTemplate();
 
     //先使用写死的方式测试一下提供方的
     @GetMapping("/testByStaticUrl")
@@ -62,6 +71,39 @@ public class ConsumerController {
         URI uri = provider.getUri();
         System.out.println("这次拿到的url是： "+uri.toString());
         String forObject = restTemplate.getForObject(uri.toString() + "/getHi", String.class);
+        return forObject;
+    }
+
+    //在代码中自定义负载策略
+    @RequestMapping("/loadbalance2")
+    public String loadbalance2(){
+        //自定义的负载算法是每个服务分别被调用2次
+        ServiceInstance instance;
+        List<ServiceInstance> provider1 = discoveryClient.getInstances("PROVIDER");
+
+        int i = count.incrementAndGet();
+        System.out.println("i的值是："+i);
+        //一支服务中有2个实例，所以策略写死，仅仅是测试使用
+        if(i%4 == 0){
+            instance = provider1.get(0);
+        }else if(i%4 == 1){
+            instance = provider1.get(0);
+        }else {
+            instance = provider1.get(1);
+        }
+        URI uri = instance.getUri();
+        System.out.println("这次拿到的url是： "+uri.toString());
+        String forObject = restTemplate.getForObject(uri.toString() + "/getHi", String.class);
+        return forObject;
+    }
+
+    //自动处理URL
+    @RequestMapping("/loadbalance3")
+    public String loadbalance3(){
+        //自动处理URL，后面的前面的provider是自动处理的,这时候RestTemplate要是自动注入的
+        String url = "http://provider/getHi";
+        System.out.println("这次拿到的url是： "+url);
+        String forObject = restTemplate.getForObject(url, String.class);
         return forObject;
     }
 
