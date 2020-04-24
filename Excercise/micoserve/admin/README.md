@@ -274,3 +274,157 @@ Health Url	http://172.16.28.152:82/actuator/health
 Management Url	http://172.16.28.152:82/actuator
 ```
 
+> [参考官网](https://codecentric.github.io/spring-boot-admin/2.0.3/#set-up-admin-server)
+>
+> [参考博客](https://www.jianshu.com/p/30d48cba1733)
+>
+> [参考阿里云文档](https://help.aliyun.com/knowledge_detail/36576.html?spm=a2c4g.11186631.2.3.30ae44fd1zFUoH)
+
+# 5.发送钉钉预警消息
+
+发送钉钉消息不用引入额外依赖
+
+**启动类**
+
+```
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
+import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
+
+@SpringBootApplication
+@EnableAdminServer
+public class AdminApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AdminApplication.class, args);
+	}
+	   @Bean
+	    public DingDingNotifier dingDingNotifier(InstanceRepository repository) {
+	        return new DingDingNotifier(repository);
+	    }
+}
+```
+
+**通知类**
+
+```
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
+
+import de.codecentric.boot.admin.server.domain.entities.Instance;
+import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
+import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
+import de.codecentric.boot.admin.server.notify.AbstractStatusChangeNotifier;
+import reactor.core.publisher.Mono;
+
+public class DingDingNotifier extends AbstractStatusChangeNotifier  {
+	public DingDingNotifier(InstanceRepository repository) {
+        super(repository);
+    }
+    @Override
+    protected Mono<Void> doNotify(InstanceEvent event, Instance instance) {
+        String serviceName = instance.getRegistration().getName();
+        String serviceUrl = instance.getRegistration().getServiceUrl();
+        String status = instance.getStatusInfo().getStatus();
+        Map<String, Object> details = instance.getStatusInfo().getDetails();
+        StringBuilder str = new StringBuilder();
+        str.append("服务预警 : 【" + serviceName + "】");
+        str.append("【服务地址】" + serviceUrl);
+        str.append("【状态】" + status);
+        str.append("【详情】" + JSONObject.toJSONString(details));
+        return Mono.fromRunnable(() -> {
+            DingDingMessageUtil.sendTextMessage(str.toString());
+        });
+    }
+}
+```
+
+**发送工具类**
+
+```
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.alibaba.fastjson.JSONObject;
+
+public class DingDingMessageUtil {
+	public static String access_token = "Token";
+    public static void sendTextMessage(String msg) {
+        try {
+            Message message = new Message();
+            message.setMsgtype("text");
+            message.setText(new MessageInfo(msg));
+            URL url = new URL("https://oapi.dingtalk.com/robot/send?access_token=" + access_token);
+            // 建立 http 连接
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Charset", "UTF-8");
+            conn.setRequestProperty("Content-Type", "application/Json; charset=UTF-8");
+            conn.connect();
+            OutputStream out = conn.getOutputStream();
+            String textMessage = JSONObject.toJSONString(message);
+            byte[] data = textMessage.getBytes();
+            out.write(data);
+            out.flush();
+            out.close();
+            InputStream in = conn.getInputStream();
+            byte[] data1 = new byte[in.available()];
+            in.read(data1);
+            System.out.println(new String(data1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**消息类**
+
+```
+public class Message {
+	private String msgtype;
+    private MessageInfo text;
+    public String getMsgtype() {
+        return msgtype;
+    }
+    public void setMsgtype(String msgtype) {
+        this.msgtype = msgtype;
+    }
+    public MessageInfo getText() {
+        return text;
+    }
+    public void setText(MessageInfo text) {
+        this.text = text;
+    }
+}
+
+
+
+
+
+package com.mashibing.admin;
+
+public class MessageInfo {
+    private String content;
+    public MessageInfo(String content) {
+        this.content = content;
+    }
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+}
+```
+
+> [参考博客](https://www.cnblogs.com/yansg/p/12589675.html)
