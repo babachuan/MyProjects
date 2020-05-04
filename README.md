@@ -6,7 +6,7 @@ Feign操作
 | [hystix](Excercise/micoserve/hystix) | Hystrix基本使用（降级、限流）       | -                                                            |
 | [zuul](Excercise/micoserve/zuul)     | Zuul网关搭建<br>Sleuth链路追踪      | -                                                            |
 | [admin](Excercise/micoserve/admin)   | Spring cloud admin<br>监控邮件&通知 | [set-up-admin-server](https://codecentric.github.io/spring-boot-admin/2.0.3/#set-up-admin-server) |
-|                                      |                                     |                                                              |
+| [config](Excercise/micoserve/config) | 配置中心<br>热更新                  | [spring-cloud-config](https://spring.io/projects/spring-cloud-config) |
 |                                      |                                     |                                                              |
 |                                      |                                     |                                                              |
 |                                      |                                     |                                                              |
