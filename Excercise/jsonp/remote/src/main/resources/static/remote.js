@@ -1,0 +1,1 @@
+localHandler({"result":"I am from remote.js"});

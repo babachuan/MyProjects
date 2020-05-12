@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript">
+        var flightHandler = function(data){
+            alert("你的查询结果：票价"+data.price+"元,剩余"+data.tickets+"张");
+        }
+
+    var url ="http://remoteserver:81/flight/result?code=CA1998&callback=flightHandler";
+    var script = document.createElement("script");
+    script.setAttribute("src",url);
+    document.getElementsByTagName("head")[0].appendChild(script);
+
+    </script>
+</head>
+<body>
+
+<h1>hello</h1>
+</body>
+</html>
